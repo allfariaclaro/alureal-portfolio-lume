@@ -1,26 +1,34 @@
-# Case Study — LUME
+# Case Study — LUME Delivery
 
 ## Desafio
-Criar uma experiência digital de restaurante premium que venda a atmosfera antes de vender pratos, sem depender de fotografia de terceiros ou backend.
+Transformar um site institucional de restaurante em um canal próprio de delivery comparável, em experiência, aos grandes marketplaces — sem perder identidade de marca.
 
 ## Estratégia
-- identidade editorial escura com contraste quente;
-- hierarquia tipográfica inspirada em menus contemporâneos;
-- navegação curta com CTA de reserva sempre acessível;
-- menu degustação apresentado como sequência narrativa;
-- formulário de reserva preparado para futura integração com API.
+A experiência foi reorganizada em torno de quatro decisões principais do usuário:
 
-## Diferenciais técnicos
-- zero framework e zero dependências de runtime;
-- carregamento rápido;
-- responsividade completa;
-- acessibilidade de teclado e redução de movimento;
-- pronto para GitHub Pages.
+1. **Posso pedir agora?** — status aberto, tempo estimado, taxa e pedido mínimo.
+2. **O que quero comer?** — busca, categorias, fotos, promoções, avaliações e favoritos.
+3. **Como personalizo?** — adicionais, ponto, quantidade e observações por item.
+4. **Como recebo?** — entrega ou retirada, endereço, horário, pagamento e rastreamento.
 
-## Próximas integrações possíveis
-- calendário e disponibilidade em tempo real;
-- WhatsApp;
-- CRM;
-- confirmação por e-mail/SMS;
-- CMS para atualização de cardápio;
-- pagamentos/sinal de reserva.
+## Diferenciais
+- marca única, sem distração com concorrentes;
+- carrinho e favoritos persistentes no dispositivo;
+- histórico de pedidos e recompra;
+- cupom e regra de frete grátis;
+- avaliação do restaurante e nota por item;
+- acompanhamento pós-checkout;
+- experiência mobile semelhante a aplicativo;
+- fotos de comida e bebida em todas as áreas em que imagem agrega decisão.
+
+## Evoluções de produção
+- autenticação;
+- endereço por geolocalização;
+- cálculo real de área de entrega;
+- gateway de pagamento;
+- integração com POS/cozinha;
+- estoque e indisponibilidade de itens;
+- cupons por CRM;
+- notificações push/WhatsApp;
+- status em tempo real com entregador;
+- painel administrativo e analytics.
