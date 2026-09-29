@@ -1,25 +1,35 @@
-# LUME — projeto conceitual Alureal
+# LUME Delivery — projeto conceitual Alureal
 
-Site demonstrativo de um restaurante contemporâneo fictício, criado para o portfólio da Alureal.
+Plataforma própria de delivery para um único restaurante, inspirada nos padrões de experiência de iFood, Keeta e 99Food, mas com identidade exclusiva da LUME.
 
 ## Objetivo
-Demonstrar direção de arte, responsividade, acessibilidade, microinterações e fluxo de reserva sem depender de backend.
+Demonstrar como um restaurante pode ter seu próprio canal de delivery completo, com menos dependência de marketplace e maior controle sobre marca, recompra e relacionamento com o cliente.
 
 ## Stack
-- HTML5 semântico
+- HTML5
 - CSS responsivo
 - JavaScript vanilla
-- Compatível com GitHub Pages
+- localStorage para carrinho, favoritos e histórico demonstrativos
+- GitHub Pages
 
 ## Recursos
-- navegação mobile
-- animações progressivas com `IntersectionObserver`
-- respeito a `prefers-reduced-motion`
-- alternância entre menu degustação e vegetal
-- formulário demonstrativo de reserva
-- layout mobile-first e tipografia editorial
+- seleção de endereço de entrega;
+- busca e categorias;
+- promoções e cupons;
+- fotos de pratos e bebidas;
+- cardápio completo;
+- produto com adicionais, ponto, observações e quantidade;
+- carrinho persistente;
+- entrega grátis por faixa de valor;
+- checkout com entrega/retirada, horário e pagamento;
+- acompanhamento do pedido;
+- histórico e repetir pedido;
+- favoritos;
+- avaliações e distribuição de notas;
+- mobile bottom navigation;
+- informações de tempo, taxa e pedido mínimo.
 
-## Publicação
-Pode ser publicado diretamente pelo GitHub Pages a partir da branch `main`.
+## Fotos
+As imagens demonstrativas usadas no cardápio são provenientes do Unsplash. Veja `PHOTO_CREDITS.md`.
 
-> Projeto conceitual. Nenhum restaurante real ou dado de cliente é representado.
+> Projeto conceitual. Restaurante, produtos, preços, avaliações e pedidos são fictícios.
