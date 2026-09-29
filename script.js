@@ -23,3 +23,6 @@ form?.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(f
 const closeMainMenu=()=>{toggle?.setAttribute('aria-expanded','false');nav?.classList.remove('open');document.body.classList.remove('menu-open');if(toggle)toggle.textContent='Menu'};
 toggle?.addEventListener('click',()=>{toggle.textContent=toggle.getAttribute('aria-expanded')==='true'?'Fechar':'Menu'});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav?.classList.contains('open')){closeMainMenu();toggle?.focus()}});
+
+// polish-followup
+nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(toggle)toggle.textContent='Menu'}));
