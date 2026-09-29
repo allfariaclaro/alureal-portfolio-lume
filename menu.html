@@ -1,1 +1,58 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><title>LUME — Menu</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="pages.css"></head><body class="inner-page"><header class="site-header scrolled"><a class="brand" href="index.html"><span class="brand-mark">◌</span><span>LUME</span></a><nav class="nav"><a href="menu.html">Menu</a><a href="experiencia.html">Experiência</a><a href="journal.html">Journal</a><a class="nav-cta" href="reserva.html">Reservar</a></nav></header><main class="inner-main"><section class="page-hero"><p class="eyebrow">Menu sazonal</p><h1>Oito tempos. Duas leituras.</h1><p>O menu muda por disponibilidade, estação e pequenos produtores. A versão vegetal mantém a mesma narrativa, sem imitar o menu principal.</p><div class="subnav"><a class="active" href="menu.html">Degustação</a><a href="#vegetal">Vegetal</a><a href="#harmonizacao">Harmonização</a></div></section><section class="content-grid"><div><h2>Degustação</h2><p>Sequência demonstrativa para uma noite de 2h30 a 3h.</p></div><div class="menu-courses"><article class="course"><span>01</span><strong>Milho · tucupi · coentro</strong><small>abertura</small></article><article class="course"><span>02</span><strong>Vieira · caju · pimenta de cheiro</strong><small>frio</small></article><article class="course"><span>03</span><strong>Palmito pupunha · castanha</strong><small>vegetal</small></article><article class="course"><span>04</span><strong>Peixe do dia · moqueca clara</strong><small>mar</small></article><article class="course"><span>05</span><strong>Pato · jabuticaba</strong><small>terra</small></article><article class="course"><span>06</span><strong>Queijo curado · mel nativo</strong><small>transição</small></article><article class="course"><span>07</span><strong>Cacau · café · cumaru</strong><small>doce</small></article><article class="course"><span>08</span><strong>Pequenos finais</strong><small>encerramento</small></article></div></section><section id="vegetal" class="content-grid"><div><h2>Vegetal</h2><p>Uma sequência própria baseada em fermentação, raízes, cogumelos e frutas brasileiras.</p></div><div class="feature-list"><article class="feature"><h3>Base vegetal real</h3><p>Sem substituir proteína por imitações; cada prato parte do ingrediente.</p></article><article class="feature"><h3>Mesma duração</h3><p>O menu vegetal acompanha o ritmo e o número de tempos do degustação.</p></article></div></section><section id="harmonizacao" class="content-grid"><div><h2>Harmonização</h2></div><div class="feature-list"><article class="feature"><h3>Vinhos</h3><p>Seleção de pequenos produtores e estilos de baixa intervenção.</p></article><article class="feature"><h3>Sem álcool</h3><p>Infusões, fermentados, frutas, chás e reduções construídos para cada tempo.</p></article></div></section><a class="back-home" href="index.html">← Voltar ao início</a></main><script src="pages.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>LUME — Cardápio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="delivery.css">
+</head>
+<body>
+  <div data-app-header></div>
+  <main class="catalog-shell">
+    <div class="wrap">
+      <header class="catalog-head">
+        <div><h1>Cardápio</h1><p>12 itens · cozinha aberta até 23:30</p></div>
+        <div class="catalog-tools">
+          <select aria-label="Ordenar"><option>Mais pedidos</option><option>Menor preço</option><option>Melhor avaliados</option></select>
+          <a class="secondary-btn" href="favoritos.html" style="display:flex;align-items:center;padding:0 14px">♡ Favoritos</a>
+        </div>
+      </header>
+
+      <div class="category-bar" style="padding-bottom:18px">
+        <button class="category-chip active" data-category-filter="all">Tudo</button>
+        <button class="category-chip" data-category-filter="combos">Combos</button>
+        <button class="category-chip" data-category-filter="pratos">Pratos</button>
+        <button class="category-chip" data-category-filter="massas">Massas</button>
+        <button class="category-chip" data-category-filter="sanduiches">Sanduíches</button>
+        <button class="category-chip" data-category-filter="entradas">Entradas</button>
+        <button class="category-chip" data-category-filter="sobremesas">Sobremesas</button>
+        <button class="category-chip" data-category-filter="bebidas">Bebidas</button>
+      </div>
+
+      <div class="catalog-layout" data-catalog-anchor>
+        <aside class="filter-panel">
+          <h3>Filtros</h3>
+          <div class="filter-list">
+            <label><input type="checkbox"> Promoção</label>
+            <label><input type="checkbox"> Mais pedidos</label>
+            <label><input type="checkbox"> Vegetariano</label>
+            <label><input type="checkbox"> Sem álcool</label>
+            <label><input type="checkbox"> Até R$ 40</label>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+          <small style="color:var(--muted)">Use a busca no topo para encontrar por nome, ingrediente ou categoria.</small>
+        </aside>
+        <section class="product-grid" data-menu-catalog></section>
+      </div>
+    </div>
+  </main>
+
+  <div data-app-footer></div>
+  <div data-app-cart></div>
+  <script src="delivery-data.js"></script>
+  <script src="delivery.js"></script>
+</body>
+</html>
