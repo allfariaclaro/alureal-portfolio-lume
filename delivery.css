@@ -1,7 +1,7 @@
 :root{
   --bg:#f6f4ef;--surface:#fff;--ink:#171915;--muted:#71766e;--line:#e6e1d8;
   --brand:#1f3a2c;--brand-2:#d87848;--accent:#f1c46e;--danger:#b84942;--success:#2c7c50;
-  --shadow:0 18px 55px rgba(33,39,31,.10);--radius:18px;--max:1240px;
+  --shadow:0 18px 55px rgba(33,39,31,.10);--radius:18px;--max:1240px;--menu-bg:#d95c32;--menu-bg-2:#c9482d;--menu-fg:#fff;--menu-soft:rgba(255,255,255,.16);--menu-line:rgba(255,255,255,.24);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -265,4 +265,161 @@ img{display:block;max-width:100%}
   .mobile-bottom-nav span{font-size:10px;font-weight:700}
   .cart-fab{bottom:78px}
   .delivery-footer{padding-bottom:36px}
+}
+
+
+/* theme-and-navigation-upgrade-2026-09-29 */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0f120f;
+  --surface:#171b17;
+  --ink:#f4f4ef;
+  --muted:#a7afa7;
+  --line:#2c342d;
+  --brand:#8db69a;
+  --brand-2:#ef784b;
+  --accent:#f1c46e;
+  --success:#72c693;
+  --danger:#e4776f;
+  --shadow:0 18px 55px rgba(0,0,0,.34);
+  --menu-bg:#d95c32;
+  --menu-bg-2:#b9412b;
+  --menu-fg:#fff;
+  --menu-soft:rgba(255,255,255,.14);
+  --menu-line:rgba(255,255,255,.24);
+}
+
+.delivery-header{
+  background:linear-gradient(135deg,var(--menu-bg),var(--menu-bg-2));
+  border-bottom:0;
+  color:var(--menu-fg);
+  box-shadow:0 8px 28px rgba(125,43,23,.24);
+}
+.delivery-header .top-row{min-height:76px}
+.delivery-header .wordmark{font-size:17px;color:#fff}
+.delivery-header .wordmark-mark{width:31px;height:31px;box-shadow:0 0 0 2px rgba(255,255,255,.22)}
+.delivery-header .location-btn{color:#fff}
+.delivery-header .location-btn:hover{background:var(--menu-soft)}
+.delivery-header .location-copy small{color:rgba(255,255,255,.76);font-size:12px}
+.delivery-header .location-copy strong{color:#fff;font-size:15px}
+.delivery-header .icon-btn{
+  width:46px;height:46px;
+  border:1px solid var(--menu-line);
+  background:var(--menu-soft);
+  color:#fff;
+  font-size:20px;
+  font-weight:700;
+}
+.delivery-header .icon-btn:hover{background:rgba(255,255,255,.24)}
+.delivery-header .count-badge{background:#183323;color:#fff;border:2px solid var(--menu-bg)}
+.delivery-header .search-row{padding-bottom:13px}
+.delivery-header .search-box{
+  height:48px;
+  background:rgba(255,255,255,.14);
+  border:1px solid var(--menu-line);
+  color:#fff;
+}
+.delivery-header .search-box>span{font-size:20px;color:#fff}
+.delivery-header .search-box input{color:#fff;font-size:15px;font-weight:500}
+.delivery-header .search-box input::placeholder{color:rgba(255,255,255,.74)}
+
+.theme-toggle{
+  position:relative;
+}
+.theme-toggle .theme-icon{font-size:21px;line-height:1}
+.theme-toggle .theme-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+.category-bar-wrap{
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  border-bottom:1px solid var(--line);
+}
+.mobile-bottom-nav{
+  background:linear-gradient(135deg,var(--menu-bg),var(--menu-bg-2))!important;
+  border-top:0!important;
+  box-shadow:0 -8px 28px rgba(125,43,23,.24);
+}
+.mobile-bottom-nav a{
+  color:#fff!important;
+  font-size:23px!important;
+  font-weight:800;
+  transition:background .18s ease,transform .18s ease;
+}
+.mobile-bottom-nav a:active{transform:scale(.96)}
+.mobile-bottom-nav span{
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  letter-spacing:.01em;
+}
+.mobile-bottom-nav a:hover{background:rgba(255,255,255,.11)}
+
+:root[data-theme="dark"] .product-card,
+:root[data-theme="dark"] .rating-panel,
+:root[data-theme="dark"] .review,
+:root[data-theme="dark"] .review-full,
+:root[data-theme="dark"] .cart-drawer,
+:root[data-theme="dark"] .cart-main,
+:root[data-theme="dark"] .cart-summary-card,
+:root[data-theme="dark"] .checkout-card,
+:root[data-theme="dark"] .support-card,
+:root[data-theme="dark"] .order-card,
+:root[data-theme="dark"] .filter-panel,
+:root[data-theme="dark"] .detail-info{
+  background:var(--surface);
+  color:var(--ink);
+}
+:root[data-theme="dark"] .secondary-btn,
+:root[data-theme="dark"] .drawer-close,
+:root[data-theme="dark"] .qty-btn,
+:root[data-theme="dark"] .catalog-tools select,
+:root[data-theme="dark"] .coupon-row input,
+:root[data-theme="dark"] .coupon-row button,
+:root[data-theme="dark"] .review-filter{
+  background:#1e241f;
+  color:var(--ink);
+  border-color:var(--line);
+}
+:root[data-theme="dark"] .choice,
+:root[data-theme="dark"] .address-card,
+:root[data-theme="dark"] .payment,
+:root[data-theme="dark"] .option-group,
+:root[data-theme="dark"] .detail-footer{
+  background:var(--surface);
+  color:var(--ink);
+}
+:root[data-theme="dark"] .detail-footer{background:rgba(23,27,23,.94)}
+:root[data-theme="dark"] .note-box,
+:root[data-theme="dark"] .coupon-row input{
+  background:#121612;
+  color:var(--ink);
+}
+:root[data-theme="dark"] .required{background:#252c26;color:#c9d0c9}
+:root[data-theme="dark"] .bar-track{background:#293029}
+:root[data-theme="dark"] .favorite-restaurant{background:var(--surface);color:var(--ink)}
+:root[data-theme="dark"] .category-chip{background:var(--surface);color:var(--muted)}
+:root[data-theme="dark"] .category-chip.active{background:var(--menu-bg);border-color:var(--menu-bg);color:#fff}
+:root[data-theme="dark"] .text-link,
+:root[data-theme="dark"] .rating-link{color:#ef956f}
+:root[data-theme="dark"] .mini-rating{color:#c8cbbf}
+:root[data-theme="dark"] .map-placeholder{background:#25372b}
+:root[data-theme="dark"] .map-road{background:#526b59}
+:root[data-theme="dark"] .empty-state{color:var(--muted)}
+:root[data-theme="dark"] .product-photo{background:#20251f}
+:root[data-theme="dark"] .badge:not(.promo){background:#f7f3eb;color:#20231e}
+:root[data-theme="dark"] .meta-pill{background:#f7f3eb;color:#20231e}
+:root[data-theme="dark"] .meta-pill strong{color:#335642}
+:root[data-theme="dark"] .delivery-footer{background:#0c160f}
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea{accent-color:var(--menu-bg)}
+
+@media(max-width:720px){
+  .delivery-header .top-row{min-height:68px}
+  .delivery-header .wordmark-mark{width:30px;height:30px}
+  .delivery-header .icon-btn{width:44px;height:44px;font-size:21px}
+  .delivery-header .location-copy strong{font-size:14px}
+  .delivery-header .location-copy small{font-size:11px}
+  .mobile-bottom-nav{height:68px}
+  body{padding-bottom:70px}
+  .cart-fab{bottom:82px}
 }
