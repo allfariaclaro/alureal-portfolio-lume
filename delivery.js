@@ -195,7 +195,15 @@ function renderOrders(){
 function initLocation(){
   $$('[data-location]').forEach(b=>b.onclick=()=>toast('Endereço de entrega: Av. Paulista, 1000 · Jardins'));
 }
-function init(){
+function renderShell(){
+  const header=$('[data-app-header]');
+  if(header) header.innerHTML='<header class="delivery-header"><div class="wrap"><div class="top-row"><a class="wordmark" href="index.html"><span class="wordmark-mark"></span><span>LUME</span></a><button class="location-btn" data-location><span>⌖</span><span class="location-copy"><small>Entregar em</small><strong>Av. Paulista, 1000 · Jardins</strong></span></button><div class="header-actions"><a class="icon-btn" href="favoritos.html" aria-label="Favoritos">♡</a><a class="icon-btn" href="pedidos.html" aria-label="Pedidos">⌁</a><button class="icon-btn" data-open-cart aria-label="Carrinho">🛒<span class="count-badge" data-cart-count>0</span></button></div></div><div class="search-row"><label class="search-box"><span>⌕</span><input data-search placeholder="Buscar no cardápio da LUME"></label></div></div></header>';
+  const cart=$('[data-app-cart]');
+  if(cart) cart.innerHTML='<div class="drawer-scrim" data-drawer-scrim></div><aside class="cart-drawer" data-cart-drawer><div class="drawer-head"><h2>Seu pedido</h2><button class="drawer-close" data-close-cart>×</button></div><div class="cart-items" data-cart-items></div><div class="drawer-summary"><div class="summary-line"><span>Subtotal</span><strong data-cart-subtotal></strong></div><div class="summary-line"><span>Entrega</span><strong data-cart-fee></strong></div><div class="summary-line"><span>Total</span><strong data-cart-grand></strong></div><button class="checkout-btn" data-go-checkout>Continuar para checkout</button></div></aside><button class="cart-fab" data-cart-fab data-open-cart><span data-cart-fab-label>0 itens</span><strong data-cart-total></strong></button>';
+  const footer=$('[data-app-footer]');
+  if(footer) footer.innerHTML='<footer class="delivery-footer"><div class="wrap footer-grid"><div><div class="wordmark"><span class="wordmark-mark"></span><span>LUME</span></div><p>Delivery próprio da LUME. Projeto conceitual desenvolvido pela Alureal.</p></div><div><strong>Pedido</strong><p><a href="menu.html">Cardápio</a><br><a href="pedidos.html">Meus pedidos</a><br><a href="favoritos.html">Favoritos</a></p></div><div><strong>Restaurante</strong><p><a href="avaliacoes.html">Avaliações</a><br><a href="experiencia.html">Sobre a LUME</a><br><a href="journal.html">Journal</a></p></div></div></footer>';
+}
+function init(){renderShell();
   renderProductGrids();renderMenuCatalog();renderProductDetail();renderFavoritesState();renderReviews();renderCartUI();renderCartPage();renderTracking();renderOrders();
   initGlobalCart();initStoreFavorite();initSearch();initCategoryChips();initCoupon();initCheckout();initLocation();
 }
