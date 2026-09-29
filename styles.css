@@ -24,3 +24,8 @@ body.menu-open .site-header{background:#0b0b09;border-bottom:1px solid var(--lin
   .experience-card{min-height:0}
   .experience-copy{padding:30px 22px}
 }
+
+/* portfolio-polish-2026-09-29 */
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px}.site-header{background:linear-gradient(to bottom,rgba(11,11,9,.72),transparent)}.nav a,.menu-tab,.button{touch-action:manipulation}.menu-list article{transition:padding .25s ease,background .25s ease}.menu-list article:hover{padding-left:14px;background:rgba(17,17,14,.035)}.experience-card{box-shadow:0 40px 100px rgba(0,0,0,.18)}.plate{transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s}.hero-art:hover .plate{transform:rotate(2deg) scale(1.015);box-shadow:inset 0 0 100px rgba(200,135,82,.07),0 45px 120px rgba(0,0,0,.46)}
+@media(max-width:560px){.hero{gap:18px}.hero h1{font-size:clamp(48px,15vw,70px)}.hero-lead{margin:24px 0}.hero-meta{scrollbar-width:none}.hero-meta::-webkit-scrollbar{display:none}.statement{padding-top:100px;padding-bottom:100px}.menu-section{padding-top:88px;padding-bottom:88px}.quote{padding-bottom:110px}.reservation{padding-top:88px;padding-bottom:96px}}
+@media(hover:none){.menu-list article:hover{padding-left:0;background:transparent}.hero-art:hover .plate{transform:none}}
