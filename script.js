@@ -18,3 +18,8 @@ const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecti
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 form?.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);message.textContent=`Demonstração: mesa para ${data.get('pessoas')} em ${data.get('data')} às ${data.get('horario')} pronta para integração com o sistema de reservas.`;});
+
+// portfolio-polish-2026-09-29
+const closeMainMenu=()=>{toggle?.setAttribute('aria-expanded','false');nav?.classList.remove('open');document.body.classList.remove('menu-open');if(toggle)toggle.textContent='Menu'};
+toggle?.addEventListener('click',()=>{toggle.textContent=toggle.getAttribute('aria-expanded')==='true'?'Fechar':'Menu'});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav?.classList.contains('open')){closeMainMenu();toggle?.focus()}});
