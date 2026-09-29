@@ -9,7 +9,7 @@ const money=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const getCart=()=>read(CART_KEY,[]);
-const setCart=c=>{write(CART_KEY,c);renderCartUI();};
+const setCart=c=>{write(CART_KEY,c);renderCartUI();renderCartPage();};
 const getFavs=()=>read(FAV_KEY,[]);
 const setFavs=f=>{write(FAV_KEY,f);renderFavoritesState();};
 const toast=(msg)=>{let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window.__lumeToast);window.__lumeToast=setTimeout(()=>t.classList.remove('show'),2200)};
@@ -201,7 +201,7 @@ function renderShell(){
   const cart=$('[data-app-cart]');
   if(cart) cart.innerHTML='<div class="drawer-scrim" data-drawer-scrim></div><aside class="cart-drawer" data-cart-drawer><div class="drawer-head"><h2>Seu pedido</h2><button class="drawer-close" data-close-cart>×</button></div><div class="cart-items" data-cart-items></div><div class="drawer-summary"><div class="summary-line"><span>Subtotal</span><strong data-cart-subtotal></strong></div><div class="summary-line"><span>Entrega</span><strong data-cart-fee></strong></div><div class="summary-line"><span>Total</span><strong data-cart-grand></strong></div><button class="checkout-btn" data-go-checkout>Continuar para checkout</button></div></aside><button class="cart-fab" data-cart-fab data-open-cart><span data-cart-fab-label>0 itens</span><strong data-cart-total></strong></button>';
   const footer=$('[data-app-footer]');
-  if(footer) footer.innerHTML='<footer class="delivery-footer"><div class="wrap footer-grid"><div><div class="wordmark"><span class="wordmark-mark"></span><span>LUME</span></div><p>Delivery próprio da LUME. Projeto conceitual desenvolvido pela Alureal.</p></div><div><strong>Pedido</strong><p><a href="menu.html">Cardápio</a><br><a href="pedidos.html">Meus pedidos</a><br><a href="favoritos.html">Favoritos</a></p></div><div><strong>Restaurante</strong><p><a href="avaliacoes.html">Avaliações</a><br><a href="experiencia.html">Sobre a LUME</a><br><a href="journal.html">Journal</a></p></div></div></footer>';
+  if(footer) footer.innerHTML='<nav class="mobile-bottom-nav"><a href="index.html">⌂<span>Início</span></a><a href="menu.html">⌕<span>Cardápio</span></a><a href="pedidos.html">⌁<span>Pedidos</span></a><a href="favoritos.html">♡<span>Favoritos</span></a></nav><footer class="delivery-footer"><div class="wrap footer-grid"><div><div class="wordmark"><span class="wordmark-mark"></span><span>LUME</span></div><p>Delivery próprio da LUME. Projeto conceitual desenvolvido pela Alureal.</p></div><div><strong>Pedido</strong><p><a href="menu.html">Cardápio</a><br><a href="pedidos.html">Meus pedidos</a><br><a href="favoritos.html">Favoritos</a></p></div><div><strong>Restaurante</strong><p><a href="avaliacoes.html">Avaliações</a><br><a href="experiencia.html">Sobre a LUME</a><br><a href="journal.html">Journal</a></p></div></div></footer>';
 }
 function init(){renderShell();
   renderProductGrids();renderMenuCatalog();renderProductDetail();renderFavoritesState();renderReviews();renderCartUI();renderCartPage();renderTracking();renderOrders();
