@@ -25,6 +25,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate delivery app
+        run: |
+          test -f index.html
+          test -f menu.html
+          test -f produto.html
+          test -f carrinho.html
+          test -f checkout.html
+          test -f pedido.html
+          test -f pedidos.html
+          test -f avaliacoes.html
+          test -f favoritos.html
+          node --check delivery-data.js
+          node --check delivery.js
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
