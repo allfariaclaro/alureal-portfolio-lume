@@ -7,8 +7,11 @@ const THEME_KEY='lume-theme';
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const money=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
-const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
-const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const storageGet=(storage,k)=>{try{return storage.getItem(k)}catch{return null}};
+const storageSet=(storage,k,v)=>{try{storage.setItem(k,v);return true}catch{return false}};
+const storageRemove=(storage,k)=>{try{storage.removeItem(k);return true}catch{return false}};
+const read=(k,f)=>{try{return JSON.parse(storageGet(localStorage,k))??f}catch{return f}};
+const write=(k,v)=>storageSet(localStorage,k,JSON.stringify(v));
 const getCart=()=>read(CART_KEY,[]);
 const setCart=c=>{write(CART_KEY,c);renderCartUI();renderCartPage();};
 const getFavs=()=>read(FAV_KEY,[]);
@@ -199,7 +202,7 @@ function initLocation(){
 function applyTheme(theme){
   const next=theme==='dark'?'dark':'light';
   document.documentElement.dataset.theme=next;
-  localStorage.setItem(THEME_KEY,next);
+  storageSet(localStorage,THEME_KEY,next);
   document.querySelectorAll('[data-theme-toggle]').forEach(button=>{
     const dark=next==='dark';
     button.setAttribute('aria-label',dark?'Ativar modo claro':'Ativar modo escuro');
@@ -209,9 +212,11 @@ function applyTheme(theme){
   });
 }
 function initTheme(){
-  const stored=localStorage.getItem(THEME_KEY);
-  const preferred=stored||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-  applyTheme(preferred);
+  const raw=storageGet(localStorage,THEME_KEY);
+  const stored=raw==='dark'||raw==='light'?raw:null;
+  let system='light';
+  try{system=window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'}catch{}
+  applyTheme(stored||system);
   document.querySelectorAll('[data-theme-toggle]').forEach(button=>button.addEventListener('click',()=>{
     applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
   }));
@@ -224,8 +229,26 @@ function renderShell(){
   const footer=$('[data-app-footer]');
   if(footer) footer.innerHTML='<nav class="mobile-bottom-nav" aria-label="Navegação principal"><a href="index.html" aria-label="Início"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"/></svg><span>Início</span></a><a href="menu.html" aria-label="Cardápio"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>Cardápio</span></a><a href="pedidos.html" aria-label="Pedidos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Pedidos</span></a><a href="favoritos.html" aria-label="Favoritos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.5 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Favoritos</span></a></nav><footer class="delivery-footer"><div class="wrap footer-grid"><div><div class="wordmark"><span class="wordmark-mark"></span><span>LUME</span></div><p>Delivery próprio da LUME. Projeto conceitual desenvolvido pela Alureal.</p></div><div><strong>Pedido</strong><p><a href="menu.html">Cardápio</a><br><a href="pedidos.html">Meus pedidos</a><br><a href="favoritos.html">Favoritos</a></p></div><div><strong>Restaurante</strong><p><a href="avaliacoes.html">Avaliações</a><br><a href="experiencia.html">Sobre a LUME</a><br><a href="journal.html">Journal</a></p></div></div></footer>';
 }
-function init(){renderShell();initTheme();
-  renderProductGrids();renderMenuCatalog();renderProductDetail();renderFavoritesState();renderReviews();renderCartUI();renderCartPage();renderTracking();renderOrders();
-  initGlobalCart();initStoreFavorite();initSearch();initCategoryChips();initCoupon();initCheckout();initLocation();
+const safeRun=(name,fn)=>{try{fn()}catch(error){console.error('[LUME] '+name+' failed',error)}};
+function init(){
+  safeRun('shell',renderShell);
+  safeRun('theme',initTheme);
+  safeRun('product-grids',renderProductGrids);
+  safeRun('menu-catalog',renderMenuCatalog);
+  safeRun('product-detail',renderProductDetail);
+  safeRun('favorites',renderFavoritesState);
+  safeRun('reviews',renderReviews);
+  safeRun('cart-ui',renderCartUI);
+  safeRun('cart-page',renderCartPage);
+  safeRun('tracking',renderTracking);
+  safeRun('orders',renderOrders);
+  safeRun('global-cart',initGlobalCart);
+  safeRun('store-favorite',initStoreFavorite);
+  safeRun('search',initSearch);
+  safeRun('category-chips',initCategoryChips);
+  safeRun('coupon',initCoupon);
+  safeRun('checkout',initCheckout);
+  safeRun('location',initLocation);
 }
-document.addEventListener('DOMContentLoaded',init);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+else init();
