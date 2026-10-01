@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const vm=require('node:vm');
 const assert=require('node:assert/strict');
-const context=vm.createContext({window:{},document:{readyState:'loading',addEventListener(){}}});
+const context=vm.createContext({window:{},URLSearchParams,location:{pathname:'/menu.html',search:''},document:{readyState:'loading',addEventListener(){}}});
 vm.runInContext(fs.readFileSync('delivery-data.js','utf8'),context);
 vm.runInContext(fs.readFileSync('delivery.js','utf8'),context);
 const select=state=>JSON.parse(vm.runInContext(`JSON.stringify(selectCatalogProducts(${JSON.stringify({query:'',category:'all',filters:[],sort:'default',...state})}).map(p=>p.id))`,context));
@@ -19,3 +19,21 @@ assert.deepEqual(select({query:'CAIPIRINHA',category:'bebidas',filters:['alcohol
 assert.deepEqual(select({query:'salmão'}),select({query:'salmao'}));
 assert.equal(select({sort:'rating'})[0],'combo-lume-2');
 console.log('PASS: 13 catalog regression assertions');
+
+let returnChecks=0;
+const returned=value=>vm.runInContext(`safeCatalogReturn(${JSON.stringify(value)})`,context);
+const checkReturn=(value,expected)=>{assert.equal(returned(value),expected);returnChecks++};
+checkReturn('menu.html?q=caju&category=bebidas&filters=under40&sort=price','menu.html?q=caju&category=bebidas&filters=under40&sort=price');
+checkReturn('index.html?category=entradas','index.html?category=entradas');
+checkReturn('menu.html?unknown=https://evil.invalid&q=caju','menu.html?q=caju');
+checkReturn('menu.html?q=%22%3E%3Cscript%3E','menu.html?q=%22%3E%3Cscript%3E');
+checkReturn('menu.html?q=caju&q=outro','menu.html?q=caju');
+for(const value of [null,'','https://evil.invalid/menu.html','//evil.invalid/menu.html','/menu.html','../menu.html','./menu.html','javascript:alert(1)','produto.html','menu.html#x','menu.html\\evil','menu.html\n','%6denu.html','MENU.html'])checkReturn(value,'menu.html');
+context.location.search='?q=caju&category=bebidas&filters=under40&sort=price';
+const href=vm.runInContext("productHref('soda-caju')",context);
+assert.equal(new URLSearchParams(href.split('?')[1]).get('return'),'menu.html?q=caju&category=bebidas&filters=under40&sort=price');returnChecks++;
+context.location.pathname='/portfolio/index.html';context.location.search='?category=entradas';
+assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html?category=entradas');returnChecks++;
+context.location.pathname='/favoritos.html';
+assert.equal(vm.runInContext("productHref('soda-caju')",context),'produto.html?id=soda-caju');returnChecks++;
+console.log(`PASS: ${returnChecks} safe return/link assertions`);

@@ -18,15 +18,32 @@ const getFavs=()=>read(FAV_KEY,[]);
 const setFavs=f=>{write(FAV_KEY,f);renderFavoritesState();};
 const toast=(msg)=>{let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window.__lumeToast);window.__lumeToast=setTimeout(()=>t.classList.remove('show'),2200)};
 const productById=id=>DATA.products.find(p=>p.id===id);
+function safeCatalogReturn(value){
+  if(typeof value!=='string'||/[\\\r\n]/.test(value))return 'menu.html';
+  const match=/^(index|menu)\.html(?:\?([^#]*))?$/.exec(value);
+  if(!match)return 'menu.html';
+  const params=new URLSearchParams(match[2]||'');
+  const allowed=new URLSearchParams();
+  for(const key of ['q','category','filters','sort']){
+    const value=params.get(key);if(value)allowed.set(key,value);
+  }
+  const query=allowed.toString();
+  return match[1]+'.html'+(query?'?'+query:'');
+}
+function productHref(id){
+  const page=location.pathname.split('/').pop();
+  const returnTo=['index.html','menu.html'].includes(page)?safeCatalogReturn(page+location.search):'';
+  return 'produto.html?id='+encodeURIComponent(id)+(returnTo?'&return='+encodeURIComponent(returnTo):'');
+}
 const cardMarkup=p=>{
   const fav=getFavs().includes(p.id);
   const promo=p.oldPrice?'<span class="badge promo">-'+Math.round((1-p.price/p.oldPrice)*100)+'%</span>':'';
   const badges=(p.badges||[]).map(b=>'<span class="badge">'+b+'</span>').join('');
   return '<article class="product-card" data-product-card="'+p.id+'" data-category="'+p.category+'">'+
-    '<div class="product-photo"><a href="produto.html?id='+encodeURIComponent(p.id)+'"><img src="'+p.image+'" alt="'+p.name+'" loading="lazy"></a>'+
+    '<div class="product-photo"><a href="'+productHref(p.id)+'"><img src="'+p.image+'" alt="'+p.name+'" loading="lazy"></a>'+
     '<div class="badges">'+promo+badges+'</div>'+
     '<button class="favorite-btn '+(fav?'active':'')+'" data-favorite="'+p.id+'" aria-label="Favoritar '+p.name+'">'+(fav?'♥':'♡')+'</button></div>'+
-    '<div class="product-body"><div class="product-title-row"><h3><a href="produto.html?id='+encodeURIComponent(p.id)+'">'+p.name+'</a></h3><span class="mini-rating">★ '+p.rating+'</span></div>'+
+    '<div class="product-body"><div class="product-title-row"><h3><a href="'+productHref(p.id)+'">'+p.name+'</a></h3><span class="mini-rating">★ '+p.rating+'</span></div>'+
     '<p>'+p.description+'</p><div class="product-bottom"><div class="price-stack"><span class="price">'+money(p.price)+'</span>'+(p.oldPrice?'<span class="old-price">'+money(p.oldPrice)+'</span>':'')+'</div>'+
     '<button class="add-btn" data-quick-add="'+p.id+'" aria-label="Adicionar '+p.name+'">+</button></div></div></article>';
 };
@@ -48,7 +65,7 @@ function bindProductActions(){
 }
 function quickAdd(id){
   const p=productById(id);if(!p)return;
-  if((p.options||[]).some(g=>g.required)){location.href='produto.html?id='+encodeURIComponent(id);return}
+  if((p.options||[]).some(g=>g.required)){location.href=productHref(id);return}
   const cart=getCart();const existing=cart.find(i=>i.id===id&&!i.options?.length);
   if(existing)existing.qty+=1;else cart.push({id,qty:1,options:[],note:'',unitPrice:p.price});
   setCart(cart);toast(p.name+' adicionado ao carrinho');
@@ -206,6 +223,7 @@ function renderMenuCatalog(){
 function renderProductDetail(){
   const root=$('[data-product-detail]');if(!root)return;
   const id=new URLSearchParams(location.search).get('id')||DATA.products[0]?.id;const p=productById(id);if(!p)return;
+  const back=$('[data-catalog-return]');if(back)back.setAttribute('href',safeCatalogReturn(new URLSearchParams(location.search).get('return')));
   document.title='LUME — '+p.name;
   const groups=(p.options||[]).map((g,gi)=>'<section class="option-group" data-option-group="'+gi+'" data-max="'+g.max+'" data-required="'+(g.required?'1':'0')+'"><div class="option-head"><strong>'+g.title+'</strong>'+(g.required?'<span class="required">Obrigatório</span>':'<span class="required">Opcional</span>')+'</div>'+g.items.map((o,oi)=>'<div class="option-item"><label><input '+(g.max===1?'type="radio" name="option-'+gi+'"':'type="checkbox"')+' data-option="'+gi+'-'+oi+'" data-price="'+o.price+'" data-name="'+o.name+'"> '+o.name+'</label><span>'+(o.price?'+'+money(o.price):'Incluso')+'</span></div>').join('')+'</section>').join('');
   root.innerHTML='<div class="product-detail-grid"><div class="detail-photo"><img src="'+p.image+'" alt="'+p.name+'"></div><div class="detail-info"><div class="product-title-row"><span class="cover-badge" style="color:var(--brand);background:#eef3ef;border-color:#dae5dd">★ '+p.rating+' · '+p.reviews+' avaliações</span><button class="favorite-btn '+(getFavs().includes(p.id)?'active':'')+'" data-favorite="'+p.id+'">'+(getFavs().includes(p.id)?'♥':'♡')+'</button></div><h1>'+p.name+'</h1><p>'+p.description+'</p><div class="detail-price">'+money(p.price)+'</div>'+groups+'<section class="option-group"><div class="option-head"><strong>Alguma observação?</strong><span class="required">Opcional</span></div><textarea class="note-box" data-note maxlength="140" placeholder="Ex.: tirar cebola, molho separado..."></textarea></section><div class="detail-footer"><div class="quantity-control"><button class="qty-btn" data-detail-dec>−</button><strong data-detail-qty>1</strong><button class="qty-btn" data-detail-inc>+</button></div><button class="primary-btn" data-detail-add>Adicionar · <span data-detail-total>'+money(p.price)+'</span></button></div></div></div>';
