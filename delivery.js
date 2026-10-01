@@ -111,22 +111,88 @@ function initStoreFavorite(){
   const render=()=>{const on=localStorage.getItem(STORE_FAV)==='1';b.textContent=on?'♥ Restaurante salvo':'♡ Salvar restaurante';b.classList.toggle('active',on)};
   b.onclick=()=>{localStorage.setItem(STORE_FAV,localStorage.getItem(STORE_FAV)==='1'?'0':'1');render();toast(localStorage.getItem(STORE_FAV)==='1'?'LUME salvo nos favoritos':'LUME removido dos favoritos')};render();
 }
+const normalizeCatalogText=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const catalogFilters={
+  promotion:p=>p.oldPrice>p.price,
+  popular:p=>(p.badges||[]).some(b=>/mais pedido/i.test(b)),
+  vegetarian:p=>(p.badges||[]).includes('Vegetariano'),
+  alcoholFree:p=>(p.badges||[]).includes('Sem álcool'),
+  under40:p=>p.price<=40
+};
+function selectCatalogProducts(state){
+  const query=normalizeCatalogText(state.query.trim());
+  const items=DATA.products.filter(p=>
+    (state.category==='all'||p.category===state.category)&&
+    (!query||normalizeCatalogText([p.name,p.description,p.category,...(p.tags||[])].join(' ')).includes(query))&&
+    state.filters.every(key=>catalogFilters[key](p))
+  );
+  if(state.sort==='price')items.sort((a,b)=>a.price-b.price);
+  else if(state.sort==='rating')items.sort((a,b)=>b.rating-a.rating);
+  else if(state.sort==='popular')items.sort((a,b)=>Number(catalogFilters.popular(b))-Number(catalogFilters.popular(a)));
+  return items;
+}
+function initCatalog(){
+  const grid=$('[data-menu-catalog]')||$('[data-catalog-results]');
+  if(!grid)return false;
+  const home=!!$('[data-catalog-results]');
+  let state;
+  const readState=()=>{
+    const params=new URLSearchParams(location.search);
+    state={query:params.get('q')||'',category:params.get('category')||'all',
+      filters:(params.get('filters')||'').split(',').filter(key=>Object.hasOwn(catalogFilters,key)),
+      sort:params.get('sort')|| (home?'default':'popular')};
+    if(!['all',...DATA.categories.map(c=>c.id)].includes(state.category)||state.category==='destaques')state.category='all';
+    if(!(home?['default','popular','price','rating']:['popular','price','rating']).includes(state.sort))state.sort=home?'default':'popular';
+  };
+  const render=()=>{
+    const items=selectCatalogProducts(state);
+    const active=!!state.query.trim()||state.category!=='all'||state.filters.length>0||state.sort!==(home?'default':'popular');
+    $$('[data-search]').forEach(input=>input.value=state.query);
+    $$('[data-category-filter]').forEach(button=>{
+      const on=button.dataset.categoryFilter===state.category;
+      button.classList.toggle('active',on);button.setAttribute('aria-pressed',String(on));
+    });
+    $$('[data-catalog-filter]').forEach(input=>input.checked=state.filters.includes(input.dataset.catalogFilter));
+    const sort=$('[data-catalog-sort]');if(sort)sort.value=state.sort;
+    $$('[data-product-grid]').forEach(editorial=>editorial.closest('.content-section').hidden=home&&active);
+    const section=$('[data-catalog-results-section]');if(section)section.hidden=!active;
+    $$('[data-catalog-count]').forEach(count=>count.textContent=items.length+' '+(items.length===1?'item':'itens'));
+    $$('[data-clear-catalog]').forEach(button=>button.hidden=!active);
+    grid.innerHTML=home&&!active?'':items.length?items.map(cardMarkup).join(''):
+      '<div class="empty-state">Nenhum item encontrado. Ajuste a busca ou limpe os filtros.</div>';
+    bindProductActions();
+  };
+  const update=()=>{
+    const url=new URL(location.href);
+    for(const [key,value] of Object.entries({q:state.query,category:state.category==='all'?'':state.category,
+      filters:state.filters.join(','),sort:state.sort===(home?'default':'popular')?'':state.sort})){
+      if(value)url.searchParams.set(key,value);else url.searchParams.delete(key);
+    }
+    history.replaceState(null,'',url);render();
+  };
+  readState();render();
+  $$('[data-search]').forEach(input=>input.addEventListener('input',()=>{state.query=input.value;update()}));
+  $$('[data-category-filter]').forEach(button=>button.onclick=()=>{state.category=button.dataset.categoryFilter;update()});
+  $$('[data-catalog-filter]').forEach(input=>input.onchange=()=>{
+    state.filters=$$('[data-catalog-filter]:checked').map(i=>i.dataset.catalogFilter);update();
+  });
+  const sort=$('[data-catalog-sort]');if(sort)sort.onchange=()=>{state.sort=sort.value;update()};
+  $$('[data-clear-catalog]').forEach(button=>button.onclick=()=>{
+    state={query:'',category:'all',filters:[],sort:home?'default':'popular'};update();$('[data-search]')?.focus();
+  });
+  window.addEventListener('popstate',()=>{readState();render()});
+  window.addEventListener('pageshow',()=>{readState();render();renderFavoritesState();renderCartUI()});
+  return true;
+}
 function initSearch(){
+  if(initCatalog())return;
   $$('[data-search]').forEach(input=>input.addEventListener('input',()=>{
-    const q=input.value.trim().toLowerCase();
+    const q=normalizeCatalogText(input.value.trim());
     $$('[data-product-card]').forEach(card=>{
       const p=productById(card.dataset.productCard);
-      card.style.display=!q||[p.name,p.description,p.category,...(p.tags||[])].join(' ').toLowerCase().includes(q)?'':'none';
+      card.style.display=!q||normalizeCatalogText([p.name,p.description,p.category,...(p.tags||[])].join(' ')).includes(q)?'':'none';
     });
   }));
-}
-function initCategoryChips(){
-  $$('[data-category-filter]').forEach(b=>b.onclick=()=>{
-    $$('[data-category-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-    const cat=b.dataset.categoryFilter;
-    $$('[data-product-card]').forEach(card=>card.style.display=cat==='all'||cat==='destaques'||card.dataset.category===cat?'':'none');
-    if(cat!=='all'&&cat!=='destaques') document.querySelector('[data-catalog-anchor]')?.scrollIntoView({behavior:'smooth',block:'start'});
-  });
 }
 function renderReviews(){
   const preview=$('[data-reviews-preview]');if(preview)preview.innerHTML=DATA.reviews.slice(0,3).map(reviewMarkup).join('');
@@ -245,7 +311,6 @@ function init(){
   safeRun('global-cart',initGlobalCart);
   safeRun('store-favorite',initStoreFavorite);
   safeRun('search',initSearch);
-  safeRun('category-chips',initCategoryChips);
   safeRun('coupon',initCoupon);
   safeRun('checkout',initCheckout);
   safeRun('location',initLocation);

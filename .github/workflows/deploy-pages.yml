@@ -38,6 +38,7 @@ jobs:
           test -f favoritos.html
           node --check delivery-data.js
           node --check delivery.js
+          node tests/catalog.test.cjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
