@@ -1,0 +1,72 @@
+const fs=require('node:fs');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const context=vm.createContext({window:{},URLSearchParams,location:{pathname:'/menu.html',search:''},document:{readyState:'loading',addEventListener(){}}});
+vm.runInContext(fs.readFileSync('delivery-data.js','utf8'),context);
+vm.runInContext(fs.readFileSync('delivery.js','utf8'),context);
+const select=state=>JSON.parse(vm.runInContext(`JSON.stringify(selectCatalogProducts(${JSON.stringify({query:'',category:'all',filters:[],sort:'default',...state})}).map(p=>p.id))`,context));
+assert.deepEqual(select({category:'bebidas'}),['caipirinha-lume','soda-caju']);
+assert.deepEqual(select({category:'entradas'}),['croquete-costela']);
+assert.equal(select({filters:['under40']}).length,6);
+assert.equal(select({sort:'price'})[0],'soda-caju');
+assert.deepEqual(select({query:'caju',category:'bebidas',filters:['under40'],sort:'price'}),['soda-caju']);
+assert.deepEqual(select({query:'caju',category:'pratos',filters:['under40']}),[]);
+assert.deepEqual(select({filters:['vegetarian']}),['massa-trufada']);
+assert.deepEqual(select({filters:['alcoholFree']}),['soda-caju']);
+assert.deepEqual(select({filters:['promotion']}),['combo-lume-2','executivo-bowl']);
+assert.equal(select({filters:['popular']}).length,3);
+assert.deepEqual(select({query:'CAIPIRINHA',category:'bebidas',filters:['alcoholFree']}),[]);
+assert.deepEqual(select({query:'salmão'}),select({query:'salmao'}));
+assert.equal(select({sort:'rating'})[0],'combo-lume-2');
+console.log('PASS: 13 catalog regression assertions');
+
+let returnChecks=0;
+const returned=value=>vm.runInContext(`safeCatalogReturn(${JSON.stringify(value)})`,context);
+const checkReturn=(value,expected)=>{assert.equal(returned(value),expected);returnChecks++};
+checkReturn('menu.html?q=caju&category=bebidas&filters=under40&sort=price','menu.html?q=caju&category=bebidas&filters=under40&sort=price');
+checkReturn('index.html?category=entradas','index.html?category=entradas');
+checkReturn('menu.html?unknown=https://evil.invalid&q=caju','menu.html?q=caju');
+checkReturn('menu.html?q=%22%3E%3Cscript%3E','menu.html?q=%22%3E%3Cscript%3E');
+checkReturn('menu.html?q=caju&q=outro','menu.html?q=caju');
+for(const value of [null,'','https://evil.invalid/menu.html','//evil.invalid/menu.html','/menu.html','../menu.html','./menu.html','javascript:alert(1)','produto.html','menu.html#x','menu.html\\evil','menu.html\n','%6denu.html','MENU.html'])checkReturn(value,'menu.html');
+context.location.search='?q=caju&category=bebidas&filters=under40&sort=price';
+const href=vm.runInContext("productHref('soda-caju')",context);
+assert.equal(new URLSearchParams(href.split('?')[1]).get('return'),'menu.html?q=caju&category=bebidas&filters=under40&sort=price');returnChecks++;
+context.location.pathname='/portfolio/index.html';context.location.search='?category=entradas';
+assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html?category=entradas');returnChecks++;
+for(const pathname of ['/','/portfolio/','/portfolio/index.html']){
+  context.location.pathname=pathname;context.location.search='?category=entradas';
+  assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html?category=entradas');returnChecks++;
+  context.location.search='';
+  assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html');returnChecks++;
+}
+context.location.pathname='/portfolio/unknown.html';
+assert.equal(vm.runInContext("productHref('soda-caju')",context),'produto.html?id=soda-caju');returnChecks++;
+context.location.pathname='/favoritos.html';
+assert.equal(vm.runInContext("productHref('soda-caju')",context),'produto.html?id=soda-caju');returnChecks++;
+console.log(`PASS: ${returnChecks} safe return/link assertions`);
+
+// Exercise the real catalog render/clear handlers with editorial links retained
+// between renders, as on the home page (no external DOM dependency needed).
+const links=[{setAttribute(name,value){this[name]=value}},{setAttribute(name,value){this[name]=value}}];
+const editorialSection={hidden:false};
+const editorialCard={dataset:{productCard:'combo-lume-2'},querySelectorAll:selector=>selector==='a'?links:[]};
+const editorialGrid={closest:()=>editorialSection};
+const clearButton={};
+const resultSection={hidden:true};
+const resultGrid={innerHTML:''};
+const documentSingles={'[data-catalog-results]':resultGrid,'[data-catalog-results-section]':resultSection};
+const documentLists={'[data-product-grid]':[editorialGrid],'[data-product-grid] [data-product-card]':[editorialCard],'[data-clear-catalog]':[clearButton]};
+context.document={querySelector:selector=>documentSingles[selector]||null,querySelectorAll:selector=>documentLists[selector]||[]};
+context.location={pathname:'/index.html',search:'?category=entradas',href:'https://lume.alureal.com.br/index.html?category=entradas'};
+context.URL=URL;
+context.window.addEventListener=()=>{};
+context.history={replaceState(_state,_title,url){context.location.href=url.href;context.location.search=url.search}};
+assert.equal(vm.runInContext('initCatalog()',context),true);
+assert.equal(new URLSearchParams(links[0].href.split('?')[1]).get('return'),'index.html?category=entradas');
+clearButton.onclick();
+assert.equal(context.location.search,'');
+assert.equal(new URLSearchParams(links[0].href.split('?')[1]).get('return'),'index.html');
+assert.equal(new URLSearchParams(links[1].href.split('?')[1]).get('return'),'index.html');
+assert.equal(editorialSection.hidden,false);
+console.log('PASS: 6 editorial clear/render regression assertions');

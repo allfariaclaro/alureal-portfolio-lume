@@ -1,30 +1,17 @@
-name: Deploy LUME to GitHub Pages
+name: Validate LUME pull request
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  pull_request:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
       - name: Validate delivery app
         run: |
           test -f index.html
@@ -39,15 +26,3 @@ jobs:
           node --check delivery-data.js
           node --check delivery.js
           node tests/catalog.test.cjs
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

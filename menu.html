@@ -14,9 +14,10 @@
   <main class="catalog-shell">
     <div class="wrap">
       <header class="catalog-head">
-        <div><h1>Cardápio</h1><p>12 itens · cozinha aberta até 23:30</p></div>
+        <div><h1>Cardápio</h1><p><span data-catalog-count aria-live="polite">12 itens</span> · cozinha aberta até 23:30</p></div>
         <div class="catalog-tools">
-          <select aria-label="Ordenar"><option>Mais pedidos</option><option>Menor preço</option><option>Melhor avaliados</option></select>
+          <select aria-label="Ordenar" data-catalog-sort><option value="popular">Mais pedidos</option><option value="price">Menor preço</option><option value="rating">Melhor avaliados</option></select>
+          <button class="secondary-btn" data-clear-catalog hidden>Limpar filtros</button>
           <a class="secondary-btn" href="favoritos.html" style="display:flex;align-items:center;padding:0 14px">♡ Favoritos</a>
         </div>
       </header>
@@ -36,11 +37,11 @@
         <aside class="filter-panel">
           <h3>Filtros</h3>
           <div class="filter-list">
-            <label><input type="checkbox"> Promoção</label>
-            <label><input type="checkbox"> Mais pedidos</label>
-            <label><input type="checkbox"> Vegetariano</label>
-            <label><input type="checkbox"> Sem álcool</label>
-            <label><input type="checkbox"> Até R$ 40</label>
+            <label><input type="checkbox" data-catalog-filter="promotion"> Promoção</label>
+            <label><input type="checkbox" data-catalog-filter="popular"> Mais pedidos</label>
+            <label><input type="checkbox" data-catalog-filter="vegetarian"> Vegetariano</label>
+            <label><input type="checkbox" data-catalog-filter="alcoholFree"> Sem álcool</label>
+            <label><input type="checkbox" data-catalog-filter="under40"> Até R$ 40</label>
           </div>
           <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
           <small style="color:var(--muted)">Use a busca no topo para encontrar por nome, ingrediente ou categoria.</small>
