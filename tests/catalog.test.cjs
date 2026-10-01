@@ -34,6 +34,39 @@ const href=vm.runInContext("productHref('soda-caju')",context);
 assert.equal(new URLSearchParams(href.split('?')[1]).get('return'),'menu.html?q=caju&category=bebidas&filters=under40&sort=price');returnChecks++;
 context.location.pathname='/portfolio/index.html';context.location.search='?category=entradas';
 assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html?category=entradas');returnChecks++;
+for(const pathname of ['/','/portfolio/','/portfolio/index.html']){
+  context.location.pathname=pathname;context.location.search='?category=entradas';
+  assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html?category=entradas');returnChecks++;
+  context.location.search='';
+  assert.equal(new URLSearchParams(vm.runInContext("productHref('croquete-costela')",context).split('?')[1]).get('return'),'index.html');returnChecks++;
+}
+context.location.pathname='/portfolio/unknown.html';
+assert.equal(vm.runInContext("productHref('soda-caju')",context),'produto.html?id=soda-caju');returnChecks++;
 context.location.pathname='/favoritos.html';
 assert.equal(vm.runInContext("productHref('soda-caju')",context),'produto.html?id=soda-caju');returnChecks++;
 console.log(`PASS: ${returnChecks} safe return/link assertions`);
+
+// Exercise the real catalog render/clear handlers with editorial links retained
+// between renders, as on the home page (no external DOM dependency needed).
+const links=[{setAttribute(name,value){this[name]=value}},{setAttribute(name,value){this[name]=value}}];
+const editorialSection={hidden:false};
+const editorialCard={dataset:{productCard:'combo-lume-2'},querySelectorAll:selector=>selector==='a'?links:[]};
+const editorialGrid={closest:()=>editorialSection};
+const clearButton={};
+const resultSection={hidden:true};
+const resultGrid={innerHTML:''};
+const documentSingles={'[data-catalog-results]':resultGrid,'[data-catalog-results-section]':resultSection};
+const documentLists={'[data-product-grid]':[editorialGrid],'[data-product-grid] [data-product-card]':[editorialCard],'[data-clear-catalog]':[clearButton]};
+context.document={querySelector:selector=>documentSingles[selector]||null,querySelectorAll:selector=>documentLists[selector]||[]};
+context.location={pathname:'/index.html',search:'?category=entradas',href:'https://lume.alureal.com.br/index.html?category=entradas'};
+context.URL=URL;
+context.window.addEventListener=()=>{};
+context.history={replaceState(_state,_title,url){context.location.href=url.href;context.location.search=url.search}};
+assert.equal(vm.runInContext('initCatalog()',context),true);
+assert.equal(new URLSearchParams(links[0].href.split('?')[1]).get('return'),'index.html?category=entradas');
+clearButton.onclick();
+assert.equal(context.location.search,'');
+assert.equal(new URLSearchParams(links[0].href.split('?')[1]).get('return'),'index.html');
+assert.equal(new URLSearchParams(links[1].href.split('?')[1]).get('return'),'index.html');
+assert.equal(editorialSection.hidden,false);
+console.log('PASS: 6 editorial clear/render regression assertions');

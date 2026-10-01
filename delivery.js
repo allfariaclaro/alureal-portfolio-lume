@@ -31,7 +31,7 @@ function safeCatalogReturn(value){
   return match[1]+'.html'+(query?'?'+query:'');
 }
 function productHref(id){
-  const page=location.pathname.split('/').pop();
+  const page=location.pathname.split('/').pop()||'index.html';
   const returnTo=['index.html','menu.html'].includes(page)?safeCatalogReturn(page+location.search):'';
   return 'produto.html?id='+encodeURIComponent(id)+(returnTo?'&return='+encodeURIComponent(returnTo):'');
 }
@@ -177,6 +177,9 @@ function initCatalog(){
     $$('[data-clear-catalog]').forEach(button=>button.hidden=!active);
     grid.innerHTML=home&&!active?'':items.length?items.map(cardMarkup).join(''):
       '<div class="empty-state">Nenhum item encontrado. Ajuste a busca ou limpe os filtros.</div>';
+    $$('[data-product-grid] [data-product-card]').forEach(card=>{
+      $$('a',card).forEach(link=>link.setAttribute('href',productHref(card.dataset.productCard)));
+    });
     bindProductActions();
   };
   const update=()=>{

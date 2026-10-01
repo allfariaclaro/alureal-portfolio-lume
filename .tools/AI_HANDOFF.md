@@ -19,3 +19,11 @@ FEITO: ambos os links de card e quick-add com opções obrigatórias transportam
 TESTADO: 13 assertions anteriores +22 novas de allowlist/links; sintaxe; estrutura YAML; Chrome real: menu filtrado → produto → link explícito, quatro critérios/resultados/favorito/carrinho preservados; retorno externo malicioso vira menu.html; home filtrada → produto → link explícito restaura estado. Console monitorado: zero entradas. delivery-data.js mantém blob daf713d9ec797fe6c4f8dc270663d9a9e916cbec, idêntico à base. Evidências adicionais em ../lume-evidence/return-ci-browser.json e final-head-tests.txt.
 
 PENDENTE: concluir checks CI no HEAD enviado e revisão do pai. Sem merge/publicação nesta chamada.
+
+## Revisão final — home em diretório e links editoriais após limpeza
+
+FEITO: productHref normaliza segmento final vazio (/ e /portfolio/) para index.html, mantendo allowlist/fallback. Cada render do catálogo atualiza os links editoriais retidos, inclusive ao limpar critérios, para impedir retorno com estado antigo.
+
+TESTADO: 13 catálogo +29 retorno/paths/segurança +6 render/limpeza =48 assertions Node; sintaxe e diff --check. Chrome real local: /?category=entradas → produto → retorno preserva estado; index.html?category=entradas → limpar → card editorial → retorno explícito sem filtros. Dados/preços preservados. Evidências adicionais ../lume-evidence/root-clear-browser.json e root-clear-head-tests.txt.
+
+PENDENTE: check CI deste novo HEAD e revisão do pai. Mesma PR draft, sem merge/publicação.
